@@ -1,4 +1,4 @@
-import { ClientEvents, PermissionResolvable } from 'discord.js'
+import { ClientEvents } from 'discord.js'
 import BaseEvent from '../Entities/BaseEvent'
 
 export default function Event<K extends keyof ClientEvents>(identifier: K) {

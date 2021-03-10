@@ -67,7 +67,7 @@ export default class Ignitor {
 		await this.loadEvents()
 		await this.loadCommands()
 
-		NodeEmitter.register('app::ready')
+		NodeEmitter.register('app:ready')
 	}
 
 	private registerCommandByIdentifier(key: string, command: CommandInterface): void {
@@ -92,7 +92,7 @@ export default class Ignitor {
 				})
 				const end: number = Date.now()
 				resolve(end - start)
-				NodeEmitter.register('app::events::loaded')
+				NodeEmitter.register('app:events:loaded')
 			})
 		).progress({
 			loading: 'Loading events...',
@@ -111,7 +111,7 @@ export default class Ignitor {
 				})
 				const end: number = Date.now()
 				resolve(end - start)
-				NodeEmitter.register('app::commands::loaded')
+				NodeEmitter.register('app:commands:loaded')
 			})
 		).progress({
 			loading: 'Loading commands...',
@@ -132,7 +132,7 @@ export default class Ignitor {
 				})
 				const end: number = Date.now()
 				resolve(end - start)
-				NodeEmitter.register('app::middlewares::loaded')
+				NodeEmitter.register('app:middlewares:loaded')
 			})
 		).progress({
 			loading: 'Loading middlewares...',

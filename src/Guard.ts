@@ -8,7 +8,7 @@ import CommandInterface from './Interfaces/CommandInterface'
 
 export default class Guard {
 	constructor() {
-		NodeEmitter.register('app::guard::ready')
+		NodeEmitter.register('app:guard:ready')
 	}
 
 	private env: {
