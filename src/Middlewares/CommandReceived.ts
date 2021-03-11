@@ -8,7 +8,9 @@ export default class CommandReceived {
 		readonly message: Message,
 		readonly command: CommandInterface,
 		private cancelled: boolean = false
-	) {}
+	) {
+		this.setCancelled = this.setCancelled.bind(this)
+	}
 
 	public setCancelled(bool: boolean): void {
 		this.cancelled = bool
