@@ -1,12 +1,12 @@
 import BaseRequire from '../Entities/BaseRequire'
 
-type RequireContext = {
+type PrerequisitesContext = {
 	name: string
 }
 
-export default function Require(context: RequireContext) {
+export default function Prerequisites(context: PrerequisitesContext) {
 	return (target: Function) => {
-		return class Require extends BaseRequire {
+		return class Prerequisites extends BaseRequire {
 			constructor() {
 				super(context.name, target.prototype.isValid)
 			}
