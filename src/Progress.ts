@@ -1,10 +1,28 @@
 import Logger from './Logger'
 import chalk from 'chalk'
 
-export default class Progress {
-	constructor(private promise: Promise<any>) {}
+export type ProgressOptions = {
+	loading: string
+	resolve: string
+	reject: string
+}
 
-	public async progress(message: { loading: string; resolve: string; reject: string }, callbacks?: Array<() => void>): Promise<void> {
+export default class Progress {
+	private promise: Promise<any>
+
+	constructor(executor: () => void) {
+		this.promise = new Promise((resolve, reject) => {
+			const start: number = Date.now()
+			try {
+				executor()
+				resolve(Date.now() - start)
+			} catch (error) {
+				reject(error)
+			}
+		})
+	}
+
+	public async progress(message: ProgressOptions): Promise<void> {
 		function loader() {
 			let P = ['\\', '|', '/', '-']
 			let x = 0
@@ -18,10 +36,9 @@ export default class Progress {
 			const duration: number = await this.promise
 			clearInterval(load)
 			Logger.sendCustom('success', `[${this.formatDate(duration)}] ✔ ${message.resolve}`, true)
-			if (callbacks) callbacks.forEach((callback) => callback())
 		} catch (error) {
-			clearInterval(load)
 			Logger.sendCustom('error', `❌ ${message.reject}`, true)
+			clearInterval(load)
 		}
 	}
 

@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { Client, Message } from 'discord.js'
+import { Client, ClientOptions, Message } from 'discord.js'
 import path from 'path'
 import Env from '@discord-architect/env'
 import Progress from './Progress'
@@ -32,35 +32,35 @@ export default class Ignitor {
 	private async load(): Promise<void> {
 		console.clear()
 		Logger.sendCustom('info', chalk.bold(chalk.underline('Starting application\n')))
-		const files: Array<string> = new Loader(path.join(process.cwd(), 'build', this.env.SRC_DIR || 'src')).fetch()
 
-		Manager.client = new Client({
+		const entryFiles = path.join(process.cwd(), 'build', this.env.SRC_DIR || 'src')
+		const loader = new Loader(entryFiles)
+		const files: Array<string> = loader.fetch()
+
+		const clientOptions: ClientOptions = {
 			partials: JSON.parse(this.env.PARTIALS)
-		})
+		}
+
+		Manager.client = new Client(clientOptions)
 
 		const dispatcher: Dispatcher = new Dispatcher(files)
+			.registerMiddleware(new CommandRoles() as MiddlewareInterface)
+			.registerMiddleware(new CommandPermissions() as MiddlewareInterface)
 
-		dispatcher.registerMiddleware(new CommandRoles() as MiddlewareInterface)
-		dispatcher.registerMiddleware(new CommandPermissions() as MiddlewareInterface)
+		dispatcher.dispatch()
 
-		await dispatcher.dispatch()
-
-		await new Progress(
-			new Promise(async (resolve, reject) => {
-				const start: number = Date.now()
-				const token: string = await Manager.client.login(this.env.TOKEN)
-				if (token) {
-					const end: number = Date.now()
-					resolve(end - start)
-				} else reject()
-			})
-		).progress({
+		const progressOptions = {
 			loading: 'Connecting to discord client',
 			resolve: 'Connecting to discord client',
 			reject: ''
-		})
+		}
 
-		this.init()
+		new Progress(async () => {
+			const token: string = await Manager.client.login(this.env.TOKEN)
+			if (!token) throw ''
+		}).progress(progressOptions)
+
+		await this.init()
 	}
 
 	private async init(): Promise<void> {
@@ -68,79 +68,6 @@ export default class Ignitor {
 
 		Manager.client.on('message', async (message: Message) => await guard.protect(message))
 
-		await Promise.all([this.loadMiddlewares(), this.loadEvents(), this.loadCommands()])
-
 		NodeEmitter.register('app:ready')
-	}
-
-	private registerCommandByIdentifier(key: string, command: CommandInterface): void {
-		const commands = Manager.commands.get('full')!
-		if (!key) {
-			Logger.send('error', `${command.label} command has an invalid or empty tag.\n${command.path}`)
-		}
-
-		if (commands.has(key)) {
-			Logger.send('error', `The tag for command ${command.label} already exists but must be unique, please choose another one.\n${command.path}`)
-		}
-
-		commands.set(key, command)
-	}
-
-	private async loadEvents(): Promise<void> {
-		await new Progress(
-			new Promise((resolve, reject) => {
-				const start: number = Date.now()
-				Manager.events.forEach(async ([event]) => {
-					Manager.client.on(event.identifier, async (...args: any) => await event.run(args))
-				})
-				const end: number = Date.now()
-				resolve(end - start)
-				NodeEmitter.register('app:events:loaded')
-			})
-		).progress({
-			loading: 'Loading events...',
-			resolve: `Loaded events`,
-			reject: 'Failed loading'
-		})
-	}
-
-	private async loadCommands(): Promise<void> {
-		await new Progress(
-			new Promise((resolve, reject) => {
-				const start: number = Date.now()
-				Manager.commands.get('partial')?.forEach((command) => {
-					this.registerCommandByIdentifier(command.tag, command)
-					command.alias?.forEach((alias: string) => this.registerCommandByIdentifier(alias, command))
-				})
-				const end: number = Date.now()
-				resolve(end - start)
-				NodeEmitter.register('app:commands:loaded')
-			})
-		).progress({
-			loading: 'Loading commands...',
-			resolve: `Loaded commands`,
-			reject: 'Failed loading'
-		})
-	}
-
-	private async loadMiddlewares(): Promise<void> {
-		await new Progress(
-			new Promise((resolve, reject) => {
-				const start: number = Date.now()
-				Manager.middlewares.forEach((_, key) => {
-					const middlewares: Array<MiddlewareInterface> | undefined = Manager.middlewares.get(key)
-					middlewares?.forEach((middleware) => {
-						NodeEmitter.listen(middleware, middlewares)
-					})
-				})
-				const end: number = Date.now()
-				resolve(end - start)
-				NodeEmitter.register('app:middlewares:loaded')
-			})
-		).progress({
-			loading: 'Loading middlewares...',
-			resolve: `Loaded middlewares`,
-			reject: 'Failed loading'
-		})
 	}
 }
