@@ -10,11 +10,11 @@ export type ProgressOptions = {
 export default class Progress {
 	private promise: Promise<any>
 
-	constructor(executor: () => void) {
-		this.promise = new Promise((resolve, reject) => {
+	constructor(executor: () => Promise<void>) {
+		this.promise = new Promise(async (resolve, reject) => {
 			const start: number = Date.now()
 			try {
-				executor()
+				await executor()
 				resolve(Date.now() - start)
 			} catch (error) {
 				reject(error)

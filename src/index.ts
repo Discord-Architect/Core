@@ -5,6 +5,7 @@ import { BaseCommand, Command } from './Modules/Command'
 import { BaseEvent, Event } from './Modules/Event'
 import { BaseMiddleware, Middleware } from './Modules/Middleware'
 import { BaseRequire, Require } from './Modules/Require'
+import Unused from './Decorators/Unused'
 import { CommandContext } from './Middlewares'
 import Logger from './Logger'
 import Progress from './Progress'
@@ -26,5 +27,6 @@ export {
 	BaseMiddleware,
 	Middleware,
 	BaseRequire,
-	Require
+	Require,
+	Unused
 }

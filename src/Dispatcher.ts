@@ -28,34 +28,36 @@ export default class Dispatcher {
 		})
 
 		await fetchFiles.progress({
-			loading: 'Loading events...',
-			resolve: `Loaded events`,
-			reject: 'Failed loading'
+			loading: '[Files] Loading...',
+			resolve: `[Files] Loaded`,
+			reject: '[Files] Failed loading'
 		})
 
-		await this.init('middleware', this.registerMiddleware, 'app:middlewares:loaded', {
+		await this.init('middleware', (middleware) => this.registerMiddleware(middleware), 'app:middlewares:loaded', {
 			loading: '[Middlewares] Loading...',
 			resolve: `[Middlewares] Loaded`,
 			reject: '[Middlewares] Failed loading'
 		})
 
-		await this.init('require', this.registerRequire, 'app:prerequisites:loaded', {
+		await this.init('require', (require) => this.registerRequire(require), 'app:prerequisites:loaded', {
 			loading: '[Prerequisites] Loading...',
 			resolve: `[Prerequisites] Loaded !`,
 			reject: '[Prerequisites] Failed loading'
 		})
 
-		await this.init('event', this.registerEvent, 'app:events:loaded', {
+		await this.init('event', (event) => this.registerEvent(event), 'app:events:loaded', {
 			loading: '[Events] Loading...',
 			resolve: `[Events] Loaded !`,
 			reject: '[Events] Failed loading'
 		})
 
-		await this.init('command', this.registerCommand, 'app:commands:loaded', {
+		await this.init('command', (command) => this.registerCommand(command), 'app:commands:loaded', {
 			loading: '[Commands] Loading...',
 			resolve: `[Commands] Loaded !`,
 			reject: '[Commands] Failed loading'
 		})
+
+		Manager.constructables.clear()
 	}
 
 	private registerCommand(command: CommandInterface): void {

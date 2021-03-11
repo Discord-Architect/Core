@@ -5,7 +5,7 @@ export default class BaseRequire {
 	public pattern: RegExp
 	public _path: string = ''
 
-	constructor(public name: string, public run: (context: RequireContextType) => Promise<boolean>) {
+	constructor(public name: string, public isValid: (context: RequireContextType) => Promise<boolean>) {
 		this.pattern = new RegExp(name)
 	}
 
