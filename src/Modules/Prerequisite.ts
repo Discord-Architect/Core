@@ -1,4 +1,5 @@
 import Prerequisite from '../Decorators/Prerequisites'
-import BasePrerequisites from '../Interfaces/BaseRequire'
+import BasePrerequisite from '../Interfaces/BaseRequire'
+import PrerequisiteContext from '../Utils/RequireContext'
 
-export { Prerequisite, BasePrerequisites }
+export { Prerequisite, BasePrerequisite, PrerequisiteContext }

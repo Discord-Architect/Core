@@ -4,7 +4,7 @@ import { CommandInterface, ContextInterface, EventInterface, MiddlewareInterface
 import { BaseCommand, Command } from './Modules/Command'
 import { BaseEvent, Event } from './Modules/Event'
 import { BaseMiddleware, Middleware } from './Modules/Middleware'
-import { BasePrerequisites, Prerequisite } from './Modules/Prerequisite'
+import { BasePrerequisite, Prerequisite, PrerequisiteContext } from './Modules/Prerequisite'
 import Unused from './Decorators/Unused'
 import { CommandContext } from './Middlewares'
 import Logger from './Logger'
@@ -26,7 +26,8 @@ export {
 	Event,
 	BaseMiddleware,
 	Middleware,
-	BasePrerequisites,
+	BasePrerequisite,
 	Prerequisite,
-	Unused
+	Unused,
+	PrerequisiteContext
 }
