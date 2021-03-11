@@ -54,7 +54,7 @@ export default class Dispatcher {
 		this.registerEventByIdentifier(event.identifier, event)
 	}
 
-	private registerMiddleware(middleware: MiddlewareInterface): void {
+	public registerMiddleware(middleware: MiddlewareInterface): void {
 		this.registerMiddlewareByIdentifier(middleware.target, middleware)
 	}
 
@@ -64,7 +64,7 @@ export default class Dispatcher {
 		else Manager.events.set(key, [event])
 	}
 
-	private async registerMiddlewareByIdentifier(key: string, middleware: MiddlewareInterface): Promise<void> {
+	private registerMiddlewareByIdentifier(key: string, middleware: MiddlewareInterface): void {
 		const registeredMiddleware = Manager.middlewares.has(key)
 		if (registeredMiddleware) Manager.middlewares.get(key)?.push(middleware)
 		else Manager.middlewares.set(key, [middleware])

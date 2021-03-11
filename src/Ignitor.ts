@@ -11,6 +11,8 @@ import Loader from './Loader'
 import Logger from './Logger'
 import Manager from './Manager'
 import { NodeEmitter } from './NodeEmitter'
+import CommandRoles from './Middlewares/CommandRoles'
+import CommandPermissions from './Middlewares/CommandPermissions'
 
 export default class Ignitor {
 	constructor() {
@@ -30,7 +32,6 @@ export default class Ignitor {
 	private async load(): Promise<void> {
 		console.clear()
 		Logger.sendCustom('info', chalk.bold(chalk.underline('Starting application\n')))
-		const env = {}
 		const files: Array<string> = new Loader(path.join(process.cwd(), 'build', this.env.SRC_DIR || 'src')).fetch()
 
 		Manager.client = new Client({
@@ -38,6 +39,10 @@ export default class Ignitor {
 		})
 
 		const dispatcher: Dispatcher = new Dispatcher(files)
+
+		dispatcher.registerMiddleware(new CommandRoles() as MiddlewareInterface)
+		dispatcher.registerMiddleware(new CommandPermissions() as MiddlewareInterface)
+
 		await dispatcher.dispatch()
 
 		await new Progress(
@@ -63,9 +68,7 @@ export default class Ignitor {
 
 		Manager.client.on('message', async (message: Message) => await guard.protect(message))
 
-		await this.loadMiddlewares()
-		await this.loadEvents()
-		await this.loadCommands()
+		await Promise.all([this.loadMiddlewares(), this.loadEvents(), this.loadCommands()])
 
 		NodeEmitter.register('app:ready')
 	}

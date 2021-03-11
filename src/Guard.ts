@@ -5,6 +5,7 @@ import Manager from './Manager'
 import path from 'path'
 import { NodeEmitter } from './NodeEmitter'
 import CommandInterface from './Interfaces/CommandInterface'
+import { CommandReceived } from './Middlewares'
 
 export default class Guard {
 	constructor() {
@@ -39,32 +40,21 @@ export default class Guard {
 			const command: CommandInterface | undefined = commands?.get(commandName)
 
 			if (command) {
-				if (command.roles) {
-					const hasRole: boolean = this.hasRole(sender, command.roles)
-					if (!hasRole) return await message.reply('You are not allowed to execute this command.ddd')
-				}
-
-				if (command.permissions) {
-					const hasPermission: boolean = this.hasPermissions(sender, command.permissions)
-					if (!hasPermission) return await message.reply('You are not allowed to execute this command.')
-				}
-
 				if (this.env.COMMANDS_AUTO_REMOVE) {
 					await message.delete({ timeout: this.env.COMMANDS_REMOVE_TIMEOUT })
 				}
 
-				await command?.run(message, args)
+				const commandContext = new CommandReceived(sender, args, message, command)
+				NodeEmitter.register('app:command:execute', commandContext)
+
+				if (commandContext.isCancelled()) {
+					return
+				}
+
+				return await command?.run(message, args)
 			}
 		}
-	}
 
-	private hasRole(sender: GuildMember | null, roles: Array<string>): boolean {
-		if (!sender) return false
-		return roles.some((role: string) => sender.roles.cache.has(role))
-	}
-
-	private hasPermissions(sender: GuildMember | null, permissions: Array<PermissionResolvable>) {
-		if (!sender) return false
-		return permissions.some((permission: PermissionResolvable) => sender.permissions.has(permission))
+		NodeEmitter.register('app:message:received', message)
 	}
 }
