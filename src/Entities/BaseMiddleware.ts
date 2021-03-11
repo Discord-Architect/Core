@@ -1,5 +1,5 @@
 export default class BaseMiddleware {
-	public type: string = 'middleware'
+	public static type: string = 'middleware'
 	public _path: string = ''
 
 	constructor(public target: string, public run: () => Promise<void>) {}

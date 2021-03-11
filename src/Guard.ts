@@ -5,7 +5,7 @@ import Manager from './Manager'
 import path from 'path'
 import { NodeEmitter } from './NodeEmitter'
 import CommandInterface from './Interfaces/CommandInterface'
-import { CommandReceived } from './Middlewares'
+import { CommandContext } from './Middlewares'
 
 export default class Guard {
 	constructor() {
@@ -44,7 +44,7 @@ export default class Guard {
 					await message.delete({ timeout: this.env.COMMANDS_REMOVE_TIMEOUT })
 				}
 
-				const commandContext = new CommandReceived(sender, args, message, command)
+				const commandContext = new CommandContext(sender, args, message, command)
 				NodeEmitter.register('app:command:execute', commandContext)
 
 				if (commandContext.isCancelled()) {

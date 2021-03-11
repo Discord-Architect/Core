@@ -1,10 +1,10 @@
 import { GuildMember } from 'discord.js'
 import { Middleware, BaseMiddleware } from '../Modules/Middleware'
-import CommandReceived from './CommandReceived'
+import CommandContext from './CommandContext'
 
 @Middleware('app:command:execute')
 export default class CommandRoles implements BaseMiddleware {
-	public async run(context: CommandReceived): Promise<any> {
+	public async run(context: CommandContext): Promise<any> {
 		const { sender, command, message } = context
 		if (command.roles) {
 			const hasRole = (sender: GuildMember | null, roles: Array<string>) => {

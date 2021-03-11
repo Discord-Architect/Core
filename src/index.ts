@@ -4,7 +4,8 @@ import { CommandInterface, ContextInterface, EventInterface, MiddlewareInterface
 import { BaseCommand, Command } from './Modules/Command'
 import { BaseEvent, Event } from './Modules/Event'
 import { BaseMiddleware, Middleware } from './Modules/Middleware'
-import { CommandReceived } from './Middlewares'
+import { BaseRequire, Require } from './Modules/Require'
+import { CommandContext } from './Middlewares'
 import Logger from './Logger'
 import Progress from './Progress'
 
@@ -19,9 +20,11 @@ export {
 	MiddlewareInterface,
 	BaseCommand,
 	Command,
-	CommandReceived,
+	CommandContext,
 	BaseEvent,
 	Event,
 	BaseMiddleware,
-	Middleware
+	Middleware,
+	BaseRequire,
+	Require
 }

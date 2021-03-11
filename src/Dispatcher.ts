@@ -4,6 +4,7 @@ import CommandInterface from './Interfaces/CommandInterface'
 import ContextInterface from './Interfaces/ContextInterface'
 import EventInterface from './Interfaces/EventInterface'
 import MiddlewareInterface from './Interfaces/MiddlewareInterface'
+import RequireInterface from './Interfaces/RequireInterface'
 import Logger from './Logger'
 import Manager from './Manager'
 
@@ -15,11 +16,13 @@ export default class Dispatcher {
 			command: (command: CommandInterface) => void
 			event: (event: EventInterface<any>) => void
 			middleware: (middleware: MiddlewareInterface) => void
+			require: (require: RequireInterface) => void
 			unknown: () => void
 		} = {
 			command: (command: CommandInterface) => this.registerCommand(command),
 			event: (event: EventInterface<any>) => this.registerEvent(event),
 			middleware: (middleware: MiddlewareInterface) => this.registerMiddleware(middleware),
+			require: (require: RequireInterface) => this.registerRequire(require),
 			unknown: () => Logger.send('warn', 'Module is not defined')
 		}
 
@@ -58,6 +61,10 @@ export default class Dispatcher {
 		this.registerMiddlewareByIdentifier(middleware.target, middleware)
 	}
 
+	public registerRequire(require: RequireInterface): void {
+		this.registerRequireByIdentifier(require)
+	}
+
 	private registerEventByIdentifier(key: string, event: EventInterface<any>): void {
 		const registeredEvent = Manager.events.has(key)
 		if (registeredEvent) Manager.events.get(key)?.push(event)
@@ -68,6 +75,12 @@ export default class Dispatcher {
 		const registeredMiddleware = Manager.middlewares.has(key)
 		if (registeredMiddleware) Manager.middlewares.get(key)?.push(middleware)
 		else Manager.middlewares.set(key, [middleware])
+	}
+
+	private registerRequireByIdentifier(require: RequireInterface): void {
+		const registeredRequire = Manager.require.has(require.name)
+		if (registeredRequire) Logger.send('error', `The require component ${require.name} already exists but must be unique, please choose another one.\n${require.path}`)
+		else Manager.require.set(require.name, require)
 	}
 
 	private async activeLoader(registerFiles: Promise<any>): Promise<void> {

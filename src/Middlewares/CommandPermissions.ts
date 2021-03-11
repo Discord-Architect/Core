@@ -1,10 +1,10 @@
 import { GuildMember, PermissionResolvable } from 'discord.js'
 import { Middleware, BaseMiddleware } from '../Modules/Middleware'
-import CommandReceived from './CommandReceived'
+import CommandContext from './CommandContext'
 
 @Middleware('app:command:execute')
 export default class CommandPermissions implements BaseMiddleware {
-	public async run(context: CommandReceived): Promise<any> {
+	public async run(context: CommandContext): Promise<any> {
 		const { sender, command, message } = context
 		if (command.permissions) {
 			const hasPermissions = (sender: GuildMember | null, permissions: Array<PermissionResolvable>) => {

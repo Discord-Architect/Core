@@ -1,7 +1,8 @@
 import { PermissionResolvable } from 'discord.js'
+import RequireInterface from '../Interfaces/RequireInterface'
 
 export default class BaseCommand {
-	public type: string = 'command'
+	public static type: string = 'command'
 	public _path: string = ''
 
 	constructor(
@@ -12,6 +13,7 @@ export default class BaseCommand {
 		public alias: Array<string> = [],
 		public roles: Array<string> | undefined,
 		public permissions: Array<PermissionResolvable> | undefined,
+		public require: Array<RequireInterface> = [],
 		public run: () => Promise<void>
 	) {}
 

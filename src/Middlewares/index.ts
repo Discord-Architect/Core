@@ -1,3 +1,3 @@
-import CommandReceived from './CommandReceived'
+import CommandContext from './CommandContext'
 
-export { CommandReceived }
+export { CommandContext }

@@ -1,7 +1,7 @@
 import { GuildMember, Message } from 'discord.js'
 import CommandInterface from '../Interfaces/CommandInterface'
 
-export default class CommandReceived {
+export default class CommandContext {
 	constructor(
 		readonly sender: GuildMember | null,
 		readonly args: Array<string>,
