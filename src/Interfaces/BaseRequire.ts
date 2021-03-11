@@ -1,5 +1,5 @@
-import RequireContextType from '../Types/RequireContextType'
+import RequireContextType from '../Utils/RequireContext'
 
 export default interface BaseRequire {
-	run(context: RequireContextType): Promise<boolean>
+	isValid(context: RequireContextType): Promise<boolean>
 }

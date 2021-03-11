@@ -13,6 +13,7 @@ import Manager from './Manager'
 import { NodeEmitter } from './NodeEmitter'
 import CommandRoles from './Middlewares/CommandRoles'
 import CommandPermissions from './Middlewares/CommandPermissions'
+import CommandPrerequisites from './Middlewares/CommandPrerequisites'
 
 export default class Ignitor {
 	constructor() {
@@ -46,6 +47,7 @@ export default class Ignitor {
 		const dispatcher: Dispatcher = new Dispatcher(files)
 			.registerMiddleware(new CommandRoles() as MiddlewareInterface)
 			.registerMiddleware(new CommandPermissions() as MiddlewareInterface)
+			.registerMiddleware(new CommandPrerequisites() as MiddlewareInterface)
 
 		dispatcher.dispatch()
 

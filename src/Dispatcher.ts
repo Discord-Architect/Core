@@ -109,8 +109,9 @@ export default class Dispatcher {
 			Manager.constructables.get(key)?.forEach((container) => {
 				try {
 					const context: ContextInterface = new container.constructable()
-					context.path = container.path
+					if (context.unused) return
 
+					context.path = container.path
 					register(context)
 				} catch (error) {}
 			})

@@ -1,8 +1,9 @@
 import BaseRequire from './BaseRequire'
-import RequireContextType from '../Types/RequireContextType'
+import RequireContextType from '../Utils/RequireContext'
 
 export default interface RequireInterface extends BaseRequire {
 	name: string
+	pattern: RegExp
 	path: string
-	run(context: RequireContextType): Promise<boolean>
+	isValid(context: RequireContextType): Promise<boolean>
 }

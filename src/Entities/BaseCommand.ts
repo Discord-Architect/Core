@@ -13,7 +13,7 @@ export default class BaseCommand {
 		public alias: Array<string> = [],
 		public roles: Array<string> | undefined,
 		public permissions: Array<PermissionResolvable> | undefined,
-		public require: Array<RequireInterface> = [],
+		public requires: Array<{ name: string; pointer: RequireInterface }> = [],
 		public run: () => Promise<void>
 	) {}
 

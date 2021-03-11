@@ -21,13 +21,16 @@ export default function Command(context: CommandContext) {
 		return class Command extends BaseCommand {
 			constructor() {
 				const reqs = (require || []).map((name: string) => {
-					const req = Manager.require.get(name)
+					const req = Array.from(Manager.requires.values()).find((instance) => instance.pattern.test(name))
 
 					if (!req) {
 						Logger.send('error', `Prerequisite ${name} does not exist, please ensure that it does`)
 					}
 
-					return req!
+					return {
+						name,
+						pointer: req!
+					}
 				})
 				super(label, description, tag, usage, alias, roles, permissions, reqs, target.prototype.run)
 			}

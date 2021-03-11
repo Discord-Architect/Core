@@ -1,5 +1,6 @@
 import { GuildMember, Message } from 'discord.js'
 import CommandInterface from '../Interfaces/CommandInterface'
+import RequireInterface from '../Interfaces/RequireInterface'
 
 export default class CommandContext {
 	constructor(
