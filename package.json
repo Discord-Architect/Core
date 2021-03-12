@@ -1,6 +1,6 @@
 {
 	"name": "@discord-architect/core",
-	"version": "1.3.5",
+	"version": "1.3.6",
 	"main": "build/index.js",
 	"repository": "git@github.com:Discord-Architect/Core.git",
 	"author": "Freeze455 <baptiste.parmantier.pro@gmail.com>",

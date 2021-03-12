@@ -44,7 +44,7 @@ export default class Guard {
 					await message.delete({ timeout: this.env.COMMANDS_REMOVE_TIMEOUT })
 				}
 
-				const commandContext = new CommandContext(sender, args, message, command)
+				const commandContext = new CommandContext(sender, args.slice(1), message, command)
 				await NodeEmitter.register('app:command:execute', commandContext)
 
 				if (commandContext.isCancelled()) {
