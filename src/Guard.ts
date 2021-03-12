@@ -45,7 +45,7 @@ export default class Guard {
 				}
 
 				const commandContext = new CommandContext(sender, args, message, command)
-				NodeEmitter.register('app:command:execute', commandContext)
+				await NodeEmitter.register('app:command:execute', commandContext)
 
 				if (commandContext.isCancelled()) {
 					return

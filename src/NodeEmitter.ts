@@ -1,14 +1,22 @@
 import MiddlewaresType from './Types/MiddlewaresType'
-import { EventEmitter } from 'events'
 import MiddlewareInterface from './Interfaces/MiddlewareInterface'
+import CustomMap from './Utils/CustomMap'
 
-class Emitter extends EventEmitter {
-	public register(target: MiddlewaresType, ...args: Array<any>): void {
-		this.emit(target, ...args)
+type Listener = (...args: Array<any>) => Promise<void>
+
+class Emitter {
+	private listeners: CustomMap<string, Array<Listener>> = new CustomMap()
+	public async register(target: MiddlewaresType, ...args: Array<any>): Promise<void> {
+		const listenerList = this.listeners.get(target)
+		if (listenerList) {
+			for (const listener of listenerList) {
+				await listener(...args)
+			}
+		}
 	}
 
-	public listen(middleware: MiddlewareInterface, ...args: Array<any>): void {
-		this.on(middleware.target, async (...args) => await middleware.run(...args))
+	public listen(middleware: MiddlewareInterface): void {
+		this.listeners.computeIfAbsent(middleware.target, () => []).push((...args: Array<any>) => middleware.run(...args))
 	}
 }
 
