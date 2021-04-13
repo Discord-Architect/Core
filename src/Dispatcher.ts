@@ -18,6 +18,11 @@ export default class Dispatcher {
 			for (let file of this.files) {
 				const res: any = await import(file)
 				const type: 'command' | 'event' | 'middleware' | 'require' = res.default.type
+
+				if (!type) {
+					return
+				}
+
 				const constructable = Manager.constructables.computeIfAbsent(type, () => [])
 
 				constructable.push({
