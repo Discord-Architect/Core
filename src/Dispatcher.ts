@@ -17,8 +17,11 @@ export default class Dispatcher {
 			const buildUrl = '\\build'
 			for (let file of this.files) {
 				const res: any = await import(file)
-				const type: 'command' | 'event' | 'middleware' | 'require' = res.default.type
+				if (!res.default) {
+					return
+				}
 
+				const type: 'command' | 'event' | 'middleware' | 'require' = res.default.type
 				if (!type) {
 					return
 				}
@@ -35,7 +38,7 @@ export default class Dispatcher {
 		await fetchFiles.progress({
 			loading: '[Files] Loading...',
 			resolve: `[Files] Loaded`,
-			reject: '[Files] Failed loading'
+			reject: `[Files] Failed loading`
 		})
 
 		await this.init('middleware', (middleware) => this.registerMiddleware(middleware), 'app:middlewares:loaded', {

@@ -49,7 +49,7 @@ export default class Ignitor {
 			.registerMiddleware(new CommandPermissions() as MiddlewareInterface)
 			.registerMiddleware(new CommandPrerequisites() as MiddlewareInterface)
 
-		dispatcher.dispatch()
+		await dispatcher.dispatch()
 
 		const progressOptions = {
 			loading: 'Connecting to discord client',
@@ -57,7 +57,7 @@ export default class Ignitor {
 			reject: ''
 		}
 
-		new Progress(async () => {
+		await new Progress(async () => {
 			const token: string = await Manager.client.login(this.env.TOKEN)
 			if (!token) throw ''
 		}).progress(progressOptions)
@@ -68,8 +68,10 @@ export default class Ignitor {
 	private async init(): Promise<void> {
 		const guard: Guard = new Guard()
 
-		Manager.client.on('message', async (message: Message) => await guard.protect(message))
+		Manager.client.on('message', async (message: Message) => {
+			await guard.protect(message)
+		})
 
-		NodeEmitter.register('app:ready')
+		await NodeEmitter.register('app:ready')
 	}
 }
