@@ -51,10 +51,10 @@ export default class Guard {
 					return
 				}
 
-				return await command?.run(message, args)
+				return command?.run(message, args.slice(1));
 			}
 		}
 
-		NodeEmitter.register('app:message:received', message)
+		await NodeEmitter.register('app:message:received', message)
 	}
 }
